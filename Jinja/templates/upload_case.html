@@ -3,6 +3,7 @@
 {% block title %}기존 사건 불러오기{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <script src="{{ url_for('static', path='/js/upload_case.js') }}"></script>
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -10,8 +11,8 @@
     <!-- Sidebar Menu -->
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
       <div class="d-flex flex-column align-items-center align-items-md-start px-3 pt-2 min-vh-100">
-        <a href="#" class="mb-3 menu"><img src="/static/img/menu.png" class="img-fluid btn menu-icon"></a>
-        <a href="#" class="mb-3 new-case"><img src="/static/img/file_add.png" class="img-fluid btn new-case-icon"></a>
+        <span class="mb-3 menu" style="color: white; display: block; text-align: center; font-size: x-large;">메뉴</span>
+        <!-- <a href="#" class="mb-3 new-case"><img src="/static/img/file_add.png" class="img-fluid btn new-case-icon"></a> -->
         <a href="#" class="mb-3 upload-case"><img src="/static/img/file_folder.png" class="img-fluid btn upload-case-icon"></a>
         <a href="#" class="mb-3 data-manage"><img src="/static/img/document.png" class="img-fluid btn data-manage-icon"></a>
         <a href="#" alt="" class="mb-3 chatbot-icon"><img src="/static/img/chat.png" class="img-fluid btn chatbot-icon"></a>
@@ -22,7 +23,7 @@
     <div class="col bg-light">
       <div page_name class="mb-4">
         <h2>기존 사건 불러오기</h2>
-      </div>
+      </div>  
       <div class="case-table">
         <table class="table table-bordered case-table text-center">
             <thead>
@@ -34,6 +35,7 @@
                 <th scope="col">작성일</th>
                 <th scope="col">등록일</th>
                 <th scope="col">삭제</th>
+                <th scope="col">실행</th>
               </tr>
             </thead>
             <tbody>
@@ -44,7 +46,12 @@
                 <td>노예호 사건</td>
                 <td>2024. 05. 01</td>
                 <td>2024. 05. 01</td>
-                <td><i class="fas fa-trash-alt" onclick="trashcanClicked(this)"></i></td>               
+                <td><button class="trash-button" style="background-color: transparent; border: none;" onclick="trashcanClicked(this)" disabled><i class="fas fa-trash-alt"></i></button></td>
+                <td colspan="7" style="text-align: center;">
+                  <button id="executeButton" class="play-button" style="background-color: transparent; border: none;" onclick="executeClicked()">
+                    <i class="fas fa-play"></i>
+                  </button>
+                </td>                            
               </tr>
               <tr data-case-name="샘플 사건">
                 <td>2024-123</td>
@@ -53,7 +60,12 @@
                 <td>샘플 사건</td>
                 <td>2024. 04. 29</td>
                 <td>2024. 04. 29</td>
-                <td><i class="fas fa-trash-alt" onclick="trashcanClicked(this)"></i></td>  
+                <td><button class="trash-button" style="background-color: transparent; border: none;" onclick="trashcanClicked(this)" disabled><i class="fas fa-trash-alt"></i></button></td>
+                <td colspan="7" style="text-align: center;">
+                  <button id="executeButton" class="play-button" style="background-color: transparent; border: none;" onclick="executeClicked()">
+                    <i class="fas fa-play"></i>
+                  </button>
+                </td>  
               </tr>
             </tbody>
           </table>
@@ -68,13 +80,40 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     iconDecision();
-    const rows = document.querySelectorAll("tbody tr");
+    const rows = document.querySelectorAll(".case-table tbody tr");
     rows.forEach(row => {
-      row.addEventListener("click", function() {
-        const caseName = this.getAttribute("data-case-name");
+      const firstCell = row.querySelector("td:first-child");
+      firstCell.addEventListener("click", function(event) {
+        const caseName = row.getAttribute("data-case-name");
+        window.location.href = `/data_manage?caseName=${encodeURIComponent(caseName)}`;
+        event.stopPropagation();
+      });
+  
+      const executeButton = row.querySelector(".play-button");
+      executeButton.addEventListener("click", function(event) {
+        const caseName = row.getAttribute("data-case-name");
         window.location.href = `/chatbot?caseName=${encodeURIComponent(caseName)}`;
+        event.stopPropagation();
       });
     });
+  
+    // 'Upload Case' 이미지 클릭 시 이동
+    document.querySelector('.upload-case').addEventListener('click', function(event) {
+      event.preventDefault(); // 기본 동작(링크 이동) 방지
+      window.location.href = '/upload_case'; // upload_case 페이지로 이동
+    });
+  
+    // 'Data Manage' 이미지 클릭 시 이동
+    document.querySelector('.data-manage').addEventListener('click', function(event) {
+      event.preventDefault(); // 기본 동작(링크 이동) 방지
+      window.location.href = '/data_manage'; // data_manage 페이지로 이동
+    });
+  
+    // 'Chatbot' 이미지 클릭 시 이동
+    document.querySelector('.chatbot-icon').addEventListener('click', function(event) {
+      event.preventDefault(); // 기본 동작(링크 이동) 방지
+      window.location.href = '/chatbot_bar'; // chatbot 페이지로 이동
+    });
   });
-</script>
+  </script>
 {% endblock %}

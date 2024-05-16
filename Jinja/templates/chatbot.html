@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}기존 사건 불러오기{% endblock %}
+{% block title %}Chat History{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
     <script src="{{ url_for('static', path='/js/chatbot.js') }}"></script>
@@ -11,8 +11,8 @@
     <!-- Sidebar Menu -->
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
       <div class="d-flex flex-column align-items-center align-items-md-start px-3 pt-2 min-vh-100">
-        <a href="#" class="mb-3 menu"><img src="/static/img/menu.png" class="img-fluid btn menu-icon"></a>
-        <a href="#" class="mb-3 new-case"><img src="/static/img/file_add.png" class="img-fluid btn new-case-icon"></a>
+        <span class="mb-3 menu" style="color: white; display: block; text-align: center; font-size: x-large;">메뉴</span>
+        <!-- <a href="#" class="mb-3 new-case"><img src="/static/img/file_add.png" class="img-fluid btn new-case-icon"></a> -->
         <a href="#" class="mb-3 upload-case"><img src="/static/img/file_folder.png" class="img-fluid btn upload-case-icon"></a>
         <a href="#" class="mb-3 data-manage"><img src="/static/img/document.png" class="img-fluid btn data-manage-icon"></a>
         <a href="#" alt="" class="mb-3 chatbot-icon"><img src="/static/img/chat.png" class="img-fluid btn chatbot-icon"></a>
@@ -33,19 +33,10 @@
       <div class="chat-history-section">
         <ul class="chat-history-lst">
           <div class="row">
-            <div class="col">
-              <li class="history">
-                <h4>안티포렌식 행위 탐지</h4>
-                <p>제공해주신 데이터에서는 ccleanser를 사용한 흔적이 ...</p>
-              </li>
-            </div>
-            <div class="col-md-1">
-              <i class="fas fa-trash-alt"></i>
-            </div>
           </div>
-          <li class="no-history">
+          <div class="no-history">
             <h2>생성된 기록이 없습니다.<br>챗봇과 새로운 대화를 시작해보세요.</h2>
-          </li>
+          </div>
         </ul>
       </div>
     </div>
@@ -54,7 +45,7 @@
         <header>
           <h2>DF Chatbot</h2>
         </header>
-        <ul class="chatbox">
+        <ul class="chatbox" style="height: 600px; width: 600px;">
           <li class="chat incoming">
             <span class="material-symbols-outlined">smart_toy</span>
             <p>안녕하세요<br>저는 Digital Forensic Chatbot입니다.<br>올려주신 데이터에 대해 질문해주세요!</p>
@@ -65,7 +56,7 @@
         </ul>
         <div class="chat-input">
           <textarea id="user-message" placeholder="메세지를 입력하고 Enter를 눌러주세요" required></textarea>
-          <span id="send-btn" class="material-symbols-rounded">send</span>
+          <button id="send-button" style="background-color: transparent; border: none; display: none;"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
         </div>
       </div>
     </div>
@@ -74,19 +65,51 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    iconDecision();
-    const sendChatBtn = document.getElementById('send-btn');
-    const chatInput = document.getElementById('user-message');
-
-    let userMessage;
-
-    const handleChat = () => {
-      userMessage = chatInput.value.trim();
-      console.log(userMessage);
-      // Add your logic for handling the user message here
-    }
-
-    sendChatBtn.addEventListener('click', handleChat);
+      iconDecision();
+      const sendButton = document.getElementById('send-button');
+      const chatInput = document.getElementById('user-message');
+  
+      chatInput.addEventListener('input', function() {
+          sendButton.style.display = this.value.trim() === '' ? 'none' : 'inline-block';
+      });
+  
+      sendButton.addEventListener('click', sendMessage);
+  
+      chatInput.addEventListener('keydown', function(event) {
+          if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault(); // 엔터 키 기본 동작 방지
+              sendMessage();
+          }
+      });
+  
+      function sendMessage() {
+          const message = chatInput.value.trim();
+          if (message !== '') {
+              // 여기에 메시지를 전송하는 기능을 추가하세요.
+              chatInput.value = ''; // 메시지 전송 후 입력창 초기화
+              sendButton.style.display = 'none'; // 전송 후 send 아이콘 숨김
+          }
+      }
   });
-</script>
+  
+  // 'Upload Case' 이미지 클릭 시 이동
+  document.querySelector('.upload-case').addEventListener('click', function(event) {
+      event.preventDefault(); // 기본 동작(링크 이동) 방지
+      window.location.href = '/upload_case'; // upload_case 페이지로 이동
+  });
+  
+  // 'Data Manage' 이미지 클릭 시 이동
+  document.querySelector('.data-manage').addEventListener('click', function(event) {
+      event.preventDefault(); // 기본 동작(링크 이동) 방지
+      window.location.href = '/data_manage'; // data_manage 페이지로 이동
+  });
+  
+  // 'Chatbot' 이미지 클릭 시 이동
+  document.querySelector('.chatbot-icon').addEventListener('click', function(event) {
+      event.preventDefault(); // 기본 동작(링크 이동) 방지
+      window.location.href = '/chatbot_bar'; // chatbot 페이지로 이동
+  });
+  </script>
+  
+  
 {% endblock %}

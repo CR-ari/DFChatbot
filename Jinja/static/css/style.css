@@ -10,6 +10,8 @@
   cursor: pointer;
   border-radius: 16px;
 }
+
+
 .drag-drop {
   border: 2px dashed #ccc;
   border-radius: 20px;
@@ -90,6 +92,7 @@
   margin-top: 30px;
 
 }
+
 .chatbox .chat {
   display: flex;
 }
@@ -162,4 +165,12 @@
 .no-history {
   text-align: center;
   margin-top: 20px;
+}
+
+#send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  padding: 8px 12px;
 }
